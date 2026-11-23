@@ -1,0 +1,59 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'iosApp/**'
+      - '.github/workflows/ios-build.yml'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: Build Unsigned iOS IPA (AltStore / SideStore / TrollStore)
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: |
+          if ! command -v xcodegen &> /dev/null; then
+            brew install xcodegen
+          fi
+
+      - name: Generate Xcode Project
+        working-directory: iosApp
+        run: xcodegen generate
+
+      - name: Build iOS App Archive (Unsigned)
+        working-directory: iosApp
+        run: |
+          xcodebuild clean archive \
+            -project LilacAnime.xcodeproj \
+            -scheme LilacAnime \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/LilacAnime.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
+
+      - name: Package Unsigned .ipa
+        working-directory: iosApp
+        run: |
+          mkdir -p build/Payload
+          cp -R build/LilacAnime.xcarchive/Products/Applications/LilacAnime.app build/Payload/
+          cd build
+          zip -r9 LilacAnime-iOS.ipa Payload
+
+      - name: Upload LilacAnime-iOS.ipa Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LilacAnime-iOS-IPA
+          path: iosApp/build/LilacAnime-iOS.ipa
+          retention-days: 30
