@@ -443,13 +443,15 @@ public final class LinkkfApiClient: @unchecked Sendable {
             return nil
         }
 
-        let actualUrl = (obj["actual_url"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
-        let fallbackUrl = (obj["url"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
-        let streamUrl = (actualUrl?.isEmpty == false ? actualUrl : fallbackUrl).flatMap { $0.isEmpty ? nil : $0 }
-        let nextStreamUrl = (obj["url_next"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).flatMap { $0.isEmpty ? nil : $0 }
-        let prevPage = (obj["link_pre"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).flatMap { $0.isEmpty ? nil : $0 }
-        let nextPage = (obj["link_next"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).flatMap { $0.isEmpty ? nil : $0 }
-        let subtitleUrl = (obj["subtitle_url"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).flatMap { $0.isEmpty ? nil : $0 }
+        func nonEmpty(_ raw: Any?) -> String? {
+            guard let s = (raw as? String)?.trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty else { return nil }
+            return s
+        }
+        let streamUrl = nonEmpty(obj["actual_url"]) ?? nonEmpty(obj["url"])
+        let nextStreamUrl = nonEmpty(obj["url_next"])
+        let prevPage = nonEmpty(obj["link_pre"])
+        let nextPage = nonEmpty(obj["link_next"])
+        let subtitleUrl = nonEmpty(obj["subtitle_url"])
         let vodData = obj["vod_data"] as? [String: Any]
         let title = (vodData?["vod_name"] as? String) ?? ""
 

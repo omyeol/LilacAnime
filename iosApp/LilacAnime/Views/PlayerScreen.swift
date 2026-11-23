@@ -845,34 +845,36 @@ public struct PlayerScreen: View {
         timeObserverToken = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
             let sec = CMTimeGetSeconds(time)
             guard sec.isFinite else { return }
-            self.currentTime = sec
-            if let dur = self.player.currentItem?.duration, CMTimeGetSeconds(dur).isFinite && CMTimeGetSeconds(dur) > 0 {
-                self.duration = CMTimeGetSeconds(dur)
-                let progress = Float(sec / self.duration)
-                if Int(sec) % 5 == 0 {
-                    self.vm.updateWatchProgress(anime: self.anime, episode: self.currentEpisode, progress: progress)
+            Task { @MainActor in
+                self.currentTime = sec
+                if let dur = self.player.currentItem?.duration, CMTimeGetSeconds(dur).isFinite && CMTimeGetSeconds(dur) > 0 {
+                    self.duration = CMTimeGetSeconds(dur)
+                    let progress = Float(sec / self.duration)
+                    if Int(sec) % 5 == 0 {
+                        self.vm.updateWatchProgress(anime: self.anime, episode: self.currentEpisode, progress: progress)
+                    }
+                    if self.vm.playerSettings.autoPlay && self.duration - sec < 0.8 && self.nextEpisode != nil {
+                        self.playNextEpisode()
+                    }
                 }
-                if self.vm.playerSettings.autoPlay && self.duration - sec < 0.8 && self.nextEpisode != nil {
-                    self.playNextEpisode()
-                }
-            }
 
-            // Active Subtitle Cue Lookup
-            let nowMs = Int64(sec * 1000) - self.vm.playerSettings.syncOffsetMs
-            if let cue = self.subtitleCues.first(where: { nowMs >= $0.startMs && nowMs <= $0.endMs }) {
-                self.activeCueText = cue.displayText
-            } else {
-                self.activeCueText = ""
-            }
-
-            // Active AniSkip OP/ED Segment Lookup
-            if let seg = self.skipSegments.first(where: { sec >= $0.startTime && sec < $0.endTime - 0.5 }) {
-                self.activeSkipSegment = seg
-                if self.vm.playerSettings.autoSkip {
-                    self.seek(to: seg.endTime)
+                // Active Subtitle Cue Lookup
+                let nowMs = Int64(sec * 1000) - self.vm.playerSettings.syncOffsetMs
+                if let cue = self.subtitleCues.first(where: { nowMs >= $0.startMs && nowMs <= $0.endMs }) {
+                    self.activeCueText = cue.displayText
+                } else {
+                    self.activeCueText = ""
                 }
-            } else {
-                self.activeSkipSegment = nil
+
+                // Active AniSkip OP/ED Segment Lookup
+                if let seg = self.skipSegments.first(where: { sec >= $0.startTime && sec < $0.endTime - 0.5 }) {
+                    self.activeSkipSegment = seg
+                    if self.vm.playerSettings.autoSkip {
+                        self.seek(to: seg.endTime)
+                    }
+                } else {
+                    self.activeSkipSegment = nil
+                }
             }
         }
     }

@@ -42,6 +42,15 @@ public final class FlixCloudHlsProxy: @unchecked Sendable {
         lock.unlock()
     }
 
+    private func getAndTouchSession(_ sessionId: String) -> Session? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard var session = sessions[sessionId] else { return nil }
+        session.lastAccess = Date()
+        sessions[sessionId] = session
+        return session
+    }
+
     private func ensureStarted() {
         lock.lock()
         if listener != nil && port > 0 {
@@ -113,15 +122,10 @@ public final class FlixCloudHlsProxy: @unchecked Sendable {
         let sessionId = segments[1]
         let encodedUrl = segments.dropFirst(2).joined(separator: "/")
 
-        lock.lock()
-        guard var session = sessions[sessionId] else {
-            lock.unlock()
+        guard let session = getAndTouchSession(sessionId) else {
             sendHttpResponse(connection: connection, code: 410, contentType: "text/plain", body: Data("Session expired".utf8))
             return
         }
-        session.lastAccess = Date()
-        sessions[sessionId] = session
-        lock.unlock()
 
         guard let urlData = Self.base64UrlDecode(encodedUrl),
               let upstreamUrl = String(data: urlData, encoding: .utf8),
