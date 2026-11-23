@@ -1,0 +1,51 @@
+{
+  "name": "LilacAnime Repo",
+  "identifier": "com.lilac.anime.repo",
+  "subtitle": "애니메이션 감상과 AI 자막 번역을 한곳에서",
+  "description": "LilacAnime iOS 공식 AltStore / SideStore / LiveContainer 소스 저장소입니다.",
+  "iconURL": "https://raw.githubusercontent.com/omyeol/LilacAnime/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+  "headerURL": "https://raw.githubusercontent.com/omyeol/LilacAnime/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+  "website": "https://github.com/omyeol/LilacAnime",
+  "tintColor": "#9F82DC",
+  "featuredApps": [
+    "com.lilac.anime.ios"
+  ],
+  "apps": [
+    {
+      "name": "LilacAnime",
+      "bundleIdentifier": "com.lilac.anime.ios",
+      "developerName": "omyeol",
+      "subtitle": "애니메이션 스트리밍 & AI 자막 번역 플레이어",
+      "localizedDescription": "LilacAnime iOS 네이티브 버전입니다.\n\n• 멀티 스트리밍 소스: LinkKF, Re:ANIME (FlixCloud 로컬 프록시 복호화), Miruro, 애니24\n• 온라인/로컬 자막: Jimaku 일본어 자막, Anissia 한국어 자막 자동 탐색 및 ASS/SSA/SRT/SMI/VTT 지원\n• AI 자막 번역: Gemini, OpenAI, Qwen, DeepL 클라우드 번역 및 온디바이스 GGUF(llama.cpp) 로컬 AI / Whisper 음성 인식\n• 고급 비디오 필터: Anime4K Metal 셰이더 업스케일링, 하드섭(박힌 자막) 지우기, 워터마크 제거, AniSkip OP/ED 자동 건너뛰기",
+      "iconURL": "https://raw.githubusercontent.com/omyeol/LilacAnime/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "tintColor": "#9F82DC",
+      "category": "entertainment",
+      "version": "0.4.1",
+      "versionDate": "2026-11-24T02:09:00+09:00",
+      "versionDescription": "iOS 네이티브 첫 릴리스 (v0.4.1 Build 31): SwiftUI, Metal 셰이더(Anime4K / 하드섭 지우기), 클라우드 & 로컬 AI 번역, FlixCloud HLS 로컬 프록시 지원",
+      "downloadURL": "https://github.com/omyeol/LilacAnime/releases/download/v0.4.1-ios/LilacAnime-iOS.ipa",
+      "size": 705620,
+      "sha256": "e5bf7cb3f857be783b5d60484aac0183db1ffb4037dc71afb3ee1d8aa34e9bb4",
+      "minOSVersion": "17.0",
+      "versions": [
+        {
+          "version": "0.4.1",
+          "buildVersion": "31",
+          "date": "2026-11-24T02:09:00+09:00",
+          "localizedDescription": "iOS 네이티브 첫 릴리스 (v0.4.1 Build 31): SwiftUI, Metal 셰이더(Anime4K / 하드섭 지우기), 클라우드 & 로컬 AI 번역, FlixCloud HLS 로컬 프록시 지원",
+          "downloadURL": "https://github.com/omyeol/LilacAnime/releases/download/v0.4.1-ios/LilacAnime-iOS.ipa",
+          "size": 705620,
+          "sha256": "e5bf7cb3f857be783b5d60484aac0183db1ffb4037dc71afb3ee1d8aa34e9bb4",
+          "minOSVersion": "17.0"
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSAppTransportSecurity": "외부 스트리밍 및 자막 서버 연결에 사용됩니다."
+        }
+      }
+    }
+  ],
+  "news": []
+}
